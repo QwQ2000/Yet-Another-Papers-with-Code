@@ -88,7 +88,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 根据概念结构设计得到的E-R图和转换规则，得到如下关系模式：
 
-1. 论文（论文编号，论文标题，论文链接，摘要链接，发表日期）
+1. 论文（论文编号，论文标题，论文链接，摘要，发表日期）
 2. 作者（作者编号，姓名，机构）
 3. 代码（代码编号，论文编号，代码链接，收藏数，框架）。外键：论文编号
 4. 方法（方法编号，方法名，方法描述）
@@ -106,7 +106,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 |   paperId   |     int      |    否    | 主键 | 论文编号 |
 |    title    | varchar(255) |    否    |      | 论文标题 |
 |  paperLink  | varchar(255) |    否    |      | 论文链接 |
-|  abstLink   | varchar(255) |    否    |      | 摘要链接 |
+|     abs     | varchar(255) |    否    |      | 简短摘要 |
 | publishDate |     date     |    否    |      | 发表日期 |
 
 
@@ -274,7 +274,7 @@ CREATE TABLE `paper` (
   `paperId` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `paperLink` varchar(255) NOT NULL,
-  `abstLink` varchar(255) NOT NULL,
+  `abs` varchar(255) NOT NULL,
   `publishDate` date NOT NULL,
   PRIMARY KEY (`paperId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;

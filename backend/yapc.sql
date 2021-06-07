@@ -89,7 +89,7 @@ CREATE TABLE `paper` (
   `paperId` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `paperLink` varchar(255) NOT NULL,
-  `abstLink` varchar(255) NOT NULL,
+  `abs` varchar(255) NOT NULL,
   `publishDate` date NOT NULL,
   PRIMARY KEY (`paperId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;

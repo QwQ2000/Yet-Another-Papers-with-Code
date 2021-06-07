@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 backend/config.json
+.vscode
