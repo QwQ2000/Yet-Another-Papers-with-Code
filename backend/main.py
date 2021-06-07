@@ -17,7 +17,9 @@ def paper():
     order = "ORDER By publishDate"
     if request.args.get('order') == "star":
         order = "ORDER BY star"
-    cur.execute("SELECT * FROM v_paperstar WHERE title LIKE '%{}%' {}".format(request.args.get('title'),order))
+    cur.execute("SELECT * FROM v_paperstar WHERE title LIKE %s {}".format(order),
+        ('%' + request.args.get('title') + '%')
+    )
     results = cur.fetchall()
     lst = []
     for row in results:
