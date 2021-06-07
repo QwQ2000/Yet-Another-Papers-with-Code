@@ -18,11 +18,13 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 论文信息包含：论文链接、摘要链接、发表时间。
 
-代码信息包含：代码链接、收藏数、所用框架
+代码信息包含：代码链接、收藏数、所用框架。
 
-评价指标信息包含：评测指标、特殊条件
+评价指标信息包含：评测指标、特殊条件。
 
-数据集信息包含：描述、链接、发布时间
+数据集信息包含：描述、链接、发布时间。
+
+作者信息包含：姓名、机构
 
 方法和任务包含一段描述。
 
@@ -68,8 +70,8 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 分析系统需求，将系统中设计的人、物进行抽象，得到了系统的实体如下：
 
-1. 论文：论文编号、论文链接、摘要链接、发表日期
-2. 作者：作者编号、姓名
+1. 论文：论文编号、论文标题、论文链接、摘要链接、发表日期
+2. 作者：作者编号、姓名、机构
 3. 代码：代码编号、代码链接、收藏数、框架
 4. 方法：方法编号、方法名、方法描述
 5. 评价指标：指标编号、指标内容、特殊条件
@@ -78,7 +80,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 ### 2.E-R图
 
-
+![Papers with Code](report.assets/Papers with Code.svg)
 
 ## 三、数据库逻辑结构设计
 
@@ -86,14 +88,14 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 根据概念结构设计得到的E-R图和转换规则，得到如下关系模式：
 
-1. 论文（论文编号，论文链接，摘要链接，发表日期）
-2. 作者（作者编号，姓名）
+1. 论文（论文编号，论文标题，论文链接，摘要链接，发表日期）
+2. 作者（作者编号，姓名，机构）
 3. 代码（代码编号，论文编号，代码链接，收藏数，框架）。外键：论文编号
 4. 方法（方法编号，方法名，方法描述）
 5. 评价指标（指标编号，指标内容，特殊条件，数据集编号，任务编号）。外键：数据集编号，任务编号
 6. 任务（任务编号，任务描述）
 7. 数据集（数据集编号，数据集描述，数据集链接，创建日期）
-8. 论文作者（论文编号，作者编号）。外键：论文编号，作者编号
+8. 论文作者（论文编号，作者编号，作者顺序，是否通讯作者）。外键：论文编号，作者编号
 9. 论文方法（论文编号，方法编号）。外键：论文编号，方法编号
 10. 论文评价（论文编号，指标编号，得分）。外键：论文编号，指标编号
 
@@ -102,6 +104,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 |   属性名    |   数据类型   | 是否可空 |  键  |   解释   |
 | :---------: | :----------: | :------: | :--: | :------: |
 |   paperId   |     int      |    否    | 主键 | 论文编号 |
+|    title    | varchar(255) |    否    |      | 论文标题 |
 |  paperLink  | varchar(255) |    否    |      | 论文链接 |
 |  abstLink   | varchar(255) |    否    |      | 摘要链接 |
 | publishDate |     date     |    否    |      | 发表日期 |
@@ -112,6 +115,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 | :--------: | :----------: | :------: | :--: | :------: |
 |  authorId  |     int      |    否    | 主键 | 作者编号 |
 | authorName | varchar(255) |    否    |      |   姓名   |
+|    inst    | varchar(255) |    是    |      |   机构   |
 
 
 
@@ -159,10 +163,12 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 
 
-|  属性名  | 数据类型 | 是否可空 |     键     |   解释   |
-| :------: | :------: | :------: | :--------: | :------: |
-| paperId  |   int    |    否    | 主键，外键 | 论文编号 |
-| authorId |   int    |    否    | 主键，外键 | 作者编号 |
+|  属性名  | 数据类型 | 是否可空 |     键     |     解释     |
+| :------: | :------: | :------: | :--------: | :----------: |
+| paperId  |   int    |    否    | 主键，外键 |   论文编号   |
+| authorId |   int    |    否    | 主键，外键 |   作者编号   |
+|  order   |   int    |    否    |            |   作者顺序   |
+|  iscorr  |   int    |    否    |            | 是否通讯作者 |
 
 
 
@@ -201,6 +207,7 @@ DROP TABLE IF EXISTS `author`;
 CREATE TABLE `author` (
   `authorId` int NOT NULL AUTO_INCREMENT,
   `authorName` varchar(255) NOT NULL,
+  `inst` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`authorId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
@@ -265,6 +272,7 @@ CREATE TABLE `method` (
 DROP TABLE IF EXISTS `paper`;
 CREATE TABLE `paper` (
   `paperId` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
   `paperLink` varchar(255) NOT NULL,
   `abstLink` varchar(255) NOT NULL,
   `publishDate` date NOT NULL,
@@ -278,6 +286,8 @@ DROP TABLE IF EXISTS `paperauthor`;
 CREATE TABLE `paperauthor` (
   `paperId` int NOT NULL,
   `authorId` int NOT NULL,
+  `order` int NOT NULL,
+  `iscorr` int NOT NULL,
   PRIMARY KEY (`paperId`,`authorId`),
   KEY `authorIdPaperAuthor` (`authorId`),
   CONSTRAINT `authorIdPaperAuthor` FOREIGN KEY (`authorId`) REFERENCES `author` (`authorId`) ON UPDATE RESTRICT,
