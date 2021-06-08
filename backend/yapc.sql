@@ -1,4 +1,17 @@
 /*
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+DEPRECATED！！！！
+NEEDS TO BE UPDATED BEFORE FINAL SUBMISSION
+
+
+
 Navicat MySQL Data Transfer
 
 Source Server         : localhost_3306
@@ -101,7 +114,7 @@ DROP TABLE IF EXISTS `paperauthor`;
 CREATE TABLE `paperauthor` (
   `paperId` int NOT NULL,
   `authorId` int NOT NULL,
-  `order` int NOT NULL,
+  `ord` int NOT NULL,
   `iscorr` int NOT NULL,
   PRIMARY KEY (`paperId`,`authorId`),
   KEY `authorIdPaperAuthor` (`authorId`),
