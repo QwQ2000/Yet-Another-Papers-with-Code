@@ -16,21 +16,25 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 本系统中的实体包含：论文、作者、代码、方法、评价指标、数据集、任务。
 
-论文信息包含：论文链接、摘要链接、发表时间。
+论文信息包含：论文标题、论文链接、简短摘要、发表时间。
 
 代码信息包含：代码链接、收藏数、所用框架。
 
-评价指标信息包含：评测指标、特殊条件。
+评价指标信息包含：得分计算方式、对应的数据集、对应的任务。
 
-数据集信息包含：描述、链接、发布时间。
+数据集信息包含：数据集名称、描述、链接、创建日期。
 
-作者信息包含：姓名、机构
+作者信息包含：姓名、机构。
 
-方法和任务包含一段描述。
+方法和任务包含：名称、描述。
 
 每一篇论文都附有一份或多份代码实现，而一份代码唯一属于某一篇论文。一篇论文可能涉及多种机器学习方法，可能包含多名作者。
 
 一篇论文可以参与一个或多个评价指标，获得评分并与其他参与该评测的论文共同排名。一个评价指标有唯一的数据集和任务，而任务和数据集可以对应多个评价指标。
+
+作者和论文的关系中包含：作者在该论文中的作者顺序、是否是该论文的通讯作者
+
+论文和评价的关系中包含：论文在该评价指标中的得分、参与评价的模型的实现细节
 
 ### 3.应用程序功能
 
@@ -70,13 +74,13 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 分析系统需求，将系统中设计的人、物进行抽象，得到了系统的实体如下：
 
-1. 论文：论文编号、论文标题、论文链接、摘要链接、发表日期
+1. 论文：论文编号、论文标题、论文链接、摘要、发表日期
 2. 作者：作者编号、姓名、机构
 3. 代码：代码编号、代码链接、收藏数、框架
 4. 方法：方法编号、方法名、方法描述
-5. 评价指标：指标编号、指标内容、特殊条件
-6. 机器学习任务：任务编号、任务描述
-7. 数据集：数据集编号、数据集描述、数据集链接、创建日期
+5. 评价指标：指标编号、得分计算方式
+6. 机器学习任务：任务编号、任务名称、任务描述
+7. 数据集：数据集编号、数据集名称、数据集描述、数据集链接、创建日期
 
 ### 2.E-R图
 
@@ -92,7 +96,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 2. 作者（作者编号，姓名，机构）
 3. 代码（代码编号，论文编号，代码链接，收藏数，框架）。外键：论文编号
 4. 方法（方法编号，方法名，方法描述）
-5. 评价指标（指标编号，指标内容，数据集编号，任务编号）。外键：数据集编号，任务编号
+5. 评价指标（指标编号，得分计算方式，数据集编号，任务编号）。外键：数据集编号，任务编号
 6. 任务（任务编号，任务名称，任务描述）
 7. 数据集（数据集编号，数据集名称，数据集描述，数据集链接，创建日期）
 8. 论文作者（论文编号，作者编号，作者顺序，是否通讯作者）。外键：论文编号，作者编号
@@ -137,12 +141,12 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 
 
-|  属性名   |   数据类型   | 是否可空 |  键  |    解释    |
-| :-------: | :----------: | :------: | :--: | :--------: |
-|  benchId  |     int      |    否    | 主键 |  指标编号  |
-|  metric   | varchar(255) |    否    |      |  指标内容  |
-| datasetId |     int      |    否    | 外键 | 数据集编号 |
-|  taskId   |     int      |    否    | 外键 |  任务编号  |
+|  属性名   |   数据类型   | 是否可空 |  键  |     解释     |
+| :-------: | :----------: | :------: | :--: | :----------: |
+|  benchId  |     int      |    否    | 主键 |   指标编号   |
+|  metric   | varchar(255) |    否    |      | 得分计算方式 |
+| datasetId |     int      |    否    | 外键 |  数据集编号  |
+|  taskId   |     int      |    否    | 外键 |   任务编号   |
 
 
 
@@ -185,7 +189,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 | paperId |     int      |    否    | 主键，外键 | 论文编号 |
 | benchId |     int      |    否    | 主键，外键 | 指标编号 |
 |  score  | decimal(3,3) |    否    |            |   得分   |
-| modelDesc | varchar(255) |    否    |      |  模型实现细节  |
+| modelDesc | varchar(255) |    是    |      |  模型实现细节  |
 
 
 ## 四、数据库物理设计和实施
@@ -194,7 +198,7 @@ yet another Papers with Code 是一个免费开放资源库，收录了大量机
 
 使用华为GaussDB(for MySQL)云数据库建立网上图书销售系统的数据库。
 
-。。。
+
 
 ### 2.创建基本表
 
@@ -206,130 +210,133 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `author`;
 CREATE TABLE `author` (
-  `authorId` int NOT NULL AUTO_INCREMENT,
+  `authorId` int(11) NOT NULL AUTO_INCREMENT,
   `authorName` varchar(255) NOT NULL,
   `inst` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`authorId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for benchmark
 -- ----------------------------
 DROP TABLE IF EXISTS `benchmark`;
 CREATE TABLE `benchmark` (
-  `benchId` int NOT NULL AUTO_INCREMENT,
+  `benchId` int(11) NOT NULL AUTO_INCREMENT,
   `metric` varchar(255) NOT NULL,
-  `condition` varchar(255) DEFAULT NULL,
-  `datasetId` int NOT NULL,
-  `taskId` int NOT NULL,
+  `datasetId` int(11) NOT NULL,
+  `taskId` int(11) NOT NULL,
   PRIMARY KEY (`benchId`),
   KEY `datasetOfBench` (`datasetId`),
   KEY `taskOfBench` (`taskId`),
   CONSTRAINT `datasetOfBench` FOREIGN KEY (`datasetId`) REFERENCES `dataset` (`datasetId`),
   CONSTRAINT `taskOfBench` FOREIGN KEY (`taskId`) REFERENCES `task` (`taskId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for code
 -- ----------------------------
 DROP TABLE IF EXISTS `code`;
 CREATE TABLE `code` (
-  `codeId` int NOT NULL AUTO_INCREMENT,
-  `paperId` int NOT NULL,
+  `codeId` int(11) NOT NULL AUTO_INCREMENT,
+  `paperId` int(11) NOT NULL,
   `codeLink` varchar(255) NOT NULL,
-  `stars` int NOT NULL,
+  `stars` int(11) NOT NULL,
   `framework` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`codeId`),
   KEY `codeOfPaper` (`paperId`),
   CONSTRAINT `codeOfPaper` FOREIGN KEY (`paperId`) REFERENCES `paper` (`paperId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for dataset
 -- ----------------------------
 DROP TABLE IF EXISTS `dataset`;
 CREATE TABLE `dataset` (
-  `datasetId` int NOT NULL AUTO_INCREMENT,
+  `datasetId` int(11) NOT NULL AUTO_INCREMENT,
   `datasetDesc` varchar(255) DEFAULT NULL,
   `datasetLink` varchar(255) NOT NULL,
   `createDate` date NOT NULL,
+  `datasetName` varchar(255) NOT NULL,
   PRIMARY KEY (`datasetId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for method
 -- ----------------------------
 DROP TABLE IF EXISTS `method`;
 CREATE TABLE `method` (
-  `methodId` int NOT NULL AUTO_INCREMENT,
+  `methodId` int(11) NOT NULL AUTO_INCREMENT,
   `methodName` varchar(255) NOT NULL,
   `methodDesc` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`methodId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for paper
 -- ----------------------------
 DROP TABLE IF EXISTS `paper`;
 CREATE TABLE `paper` (
-  `paperId` int NOT NULL AUTO_INCREMENT,
+  `paperId` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `paperLink` varchar(255) NOT NULL,
   `abs` varchar(255) NOT NULL,
   `publishDate` date NOT NULL,
   PRIMARY KEY (`paperId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for paperauthor
 -- ----------------------------
 DROP TABLE IF EXISTS `paperauthor`;
 CREATE TABLE `paperauthor` (
-  `paperId` int NOT NULL,
-  `authorId` int NOT NULL,
-  `order` int NOT NULL,
-  `iscorr` int NOT NULL,
+  `paperId` int(11) NOT NULL,
+  `authorId` int(11) NOT NULL,
+  `ord` int(11) NOT NULL,
+  `iscorr` int(11) NOT NULL,
   PRIMARY KEY (`paperId`,`authorId`),
   KEY `authorIdPaperAuthor` (`authorId`),
   CONSTRAINT `authorIdPaperAuthor` FOREIGN KEY (`authorId`) REFERENCES `author` (`authorId`) ON UPDATE RESTRICT,
   CONSTRAINT `paperIdPaperAuthor` FOREIGN KEY (`paperId`) REFERENCES `paper` (`paperId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for paperbench
 -- ----------------------------
 DROP TABLE IF EXISTS `paperbench`;
 CREATE TABLE `paperbench` (
-  `paperId` int NOT NULL,
-  `benchId` int NOT NULL,
+  `paperId` int(11) NOT NULL,
+  `benchId` int(11) NOT NULL,
   `score` decimal(3,3) NOT NULL,
+  `modelDesc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   PRIMARY KEY (`paperId`,`benchId`),
   KEY `benchIdPaperBench` (`benchId`),
   CONSTRAINT `benchIdPaperBench` FOREIGN KEY (`benchId`) REFERENCES `benchmark` (`benchId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `paperIdPaperBench` FOREIGN KEY (`paperId`) REFERENCES `paper` (`paperId`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for papermethod
 -- ----------------------------
 DROP TABLE IF EXISTS `papermethod`;
 CREATE TABLE `papermethod` (
-  `paperId` int NOT NULL,
-  `methodId` int NOT NULL,
+  `paperId` int(11) NOT NULL,
+  `methodId` int(11) NOT NULL,
   PRIMARY KEY (`paperId`,`methodId`),
   KEY `methodIdPaperMethod` (`methodId`),
   CONSTRAINT `methodIdPaperMethod` FOREIGN KEY (`methodId`) REFERENCES `method` (`methodId`),
   CONSTRAINT `paperIdPaperMethod` FOREIGN KEY (`paperId`) REFERENCES `paper` (`paperId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for task
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
-  `taskId` int NOT NULL AUTO_INCREMENT,
+  `taskId` int(11) NOT NULL AUTO_INCREMENT,
   `taskDesc` varchar(255) DEFAULT NULL,
+  `taskName` varchar(255) NOT NULL,
   PRIMARY KEY (`taskId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ```
 
