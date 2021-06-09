@@ -14,9 +14,9 @@ db = sql.connect(host = app.config["DB_HOST"],
 @app.route('/paper',methods = ['GET','POST'])
 def paper():
     cur = db.cursor()
-    order = "ORDER By publishDate"
+    order = "ORDER BY publishDate"
     if request.args.get('order') == "star":
-        order = "ORDER BY star"
+        order = "ORDER BY star DESC"
     cur.execute("SELECT * FROM v_paperstar WHERE title LIKE %s {}".format(order),
         ('%' + request.args.get('title') + '%')
     )
@@ -32,11 +32,20 @@ def paper():
         })
     return Response(json.dumps(lst),mimetype = 'application/json')
 
-#论文查询接口
-@app.route('/author',methods = ['GET','POST'])
-def author():
-    #cur = db.cursor()
-    pass
+#数据集信息查询接口，参数id数据集id
+@app.route('/ds_info',methods = ['GET','POST'])
+def ds_info():
+    d = None
+    with db.cursor() as cur:
+        cur.execute("SELECT * FROM dataset WHERE datasetId=%s",(request.args.get('id')))
+        row = cur.fetchone()
+        d = {
+            'desc':row[1],
+            'link':row[2],
+            'createDate':row[3].strftime('%Y-%m-%d'),
+            'name':row[4]
+        }
+    return Response(json.dumps(d),mimetype = 'application/json')
 
 if __name__ == '__main__':
     app.run(debug = True)
