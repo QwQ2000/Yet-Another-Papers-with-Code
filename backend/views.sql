@@ -24,3 +24,9 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`DB_USER012`@`%` SQL SECURITY DEFINER VIEW `v
 -- ----------------------------
 DROP VIEW IF EXISTS `v_paperstar`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`DB_USER012`@`%` SQL SECURITY DEFINER VIEW `v_paperstar` AS select `paper`.`title` AS `title`,`paper`.`paperLink` AS `paperLink`,`paper`.`abs` AS `abs`,`paper`.`publishDate` AS `publishDate`,sum(`code`.`stars`) AS `star` from (`paper` join `code` on((`paper`.`paperId` = `code`.`paperId`))) ;
+
+CREATE VIEW v_bench_best
+AS
+(SELECT paperId,benchId,MAX(score),modelDesc 
+FROM paperbench
+GROUP BY benchId);
