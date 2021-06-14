@@ -239,7 +239,7 @@ SOTA查询接口
 @app.route('/sota',methods= ['GET', 'POST'])
 def sota():
     cur = db.cursor()
-    cur.execute("SELECT * FROM v_task_of_paper ORDER BY paperCnt DESC")
+    cur.execute("SELECT * FROM v_task_papercount ORDER BY paperCnt DESC")
     results = cur.fetchall()
     lst = []
     for row in results:
