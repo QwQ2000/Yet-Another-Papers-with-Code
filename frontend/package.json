@@ -1,6 +1,8 @@
 {
-  "name": "t1",
-  "version": "0.1.0",
+  "name": "yapc",
+  "version": "1.0.0",
+  "description": "A simple Papers with code replica",
+  "author": "QwQ2000,RmZeta2718,woriazzc",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

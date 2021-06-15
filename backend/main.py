@@ -244,8 +244,8 @@ def sota():
     lst = []
     for row in results:
         lst.append({
-            "taskName": row[0],
-            "taskDesc": row[1]
+            "taskName": row[1],
+            "taskDesc": row[2]
         })
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
@@ -271,7 +271,7 @@ def method():
             secsql += 'AND title LIKE "%' + title + '%"'
         else:
             secsql = 'WHERE title LIKE "%' + title + '%"'
-    if secsql is None:
+    if not secsql.strip():
         cur.execute("SELECT * FROM v_method_papercount ORDER BY paperCnt DESC")
     else:
         cur.execute("SELECT DISTINCT * FROM v_method_of_paper JOIN paper USING(paperId) {}".format(secsql))

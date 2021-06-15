@@ -26,7 +26,6 @@ export default {
           // eslint-disable-next-line
           console.error(error);
         });
-      console.log(this.msg);
     },
   },
   created() {
