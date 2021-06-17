@@ -264,13 +264,16 @@ SOTA查询接口
 @app.route('/sota',methods= ['GET', 'POST'])
 def sota():
     cur = db.cursor()
-    cur.execute("SELECT * FROM v_task_of_paper ORDER BY paperCnt DESC")
+    cur.execute("SELECT * FROM v_task_papercount JOIN v_task_benchcount USING(taskId) ORDER BY paperCnt DESC;")
     results = cur.fetchall()
     lst = []
     for row in results:
         lst.append({
-            "taskName": row[0],
-            "taskDesc": row[1]
+            "taskId": row[0],
+            "taskName": row[1],
+            "taskDesc": row[2],
+            "paperCnt": row[3],
+            "benchCnt": row[4]
         })
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
