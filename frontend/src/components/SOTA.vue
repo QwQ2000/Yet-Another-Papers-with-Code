@@ -4,7 +4,7 @@
     <el-row class="row-nav">
       <h1>Browse State-of-the-Art</h1>
     </el-row>
-    <div style="padding-left: 180px">
+    <div style="padding-left: 180px; padding-right: 180px">
       <el-row>
         <h2 align="left">Computer Vision</h2>
       </el-row>

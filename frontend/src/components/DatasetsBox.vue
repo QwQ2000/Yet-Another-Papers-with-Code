@@ -4,14 +4,9 @@
       <br>
       <el-row>
         <el-col align="left">
-          <div style="font:15px large;height: 40px">
-            {{ taskName }}
+          <div style="font:15px large;height: 20px">
+            {{ datasetName }}
           </div>
-          <br>
-          <a style="font:13px Small;color: #969696">
-            <i class="el-icon-data-line"/>&nbsp {{ benchCnt }}&nbsp benchmarks<br>
-            <i class="el-icon-reading"/>&nbsp {{ paperCnt }}&nbsp papers with code
-          </a>
         </el-col>
       </el-row>
       <br>
@@ -21,22 +16,20 @@
 
 <script>
 export default {
-  name: 'SOTABox',
+  name: 'DatasetsBox',
   data() {
     return {};
   },
   props: {
-    taskName: 'Attention is All You Need',
-    taskDesc: 'aaaaa.',
-    paperCnt: '0',
-    benchCnt: '0',
-    taskLink: ''
+    datasetName: 'CoCo',
+    datasetLink: '',
+    datasetId: 0
   },
   methods: {
     search() {
       this.$router.push({
-        path: "/tasks", query: {
-          taskName: this.taskName,
+        path: "/dataset", query: {
+          id: this.datasetId,
         }
       })
     },
@@ -57,6 +50,6 @@ a {
 }
 
 .el-row {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 </style>

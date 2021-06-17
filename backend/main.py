@@ -328,45 +328,26 @@ task查询接口
 根据任务查询所有相关的评价指标，以及参与该评价指标中得分最高的论文
 根据任务查询所有相关的数据集
 taskName: 任务名称
-selection: bench/dataset 查询指标或数据集
 '''
 @app.route('/task',methods= ['GET', 'POST'])
 def task():
     cur = db.cursor()
     taskName = request.args.get('taskName')
-    selection = request.args.get('selection')
-    if selection is None:
-        cur.execute('SELECT * FROM task')
-        results = cur.fetchall()
-        lst = []
-        for row in results:
-            lst.append({
-                "taskName": row[2],
-                "taskDesc": row[1]
-            })
-    else:
-        if selection == "bench":
-            cur.execute("SELECT * FROM v_bench_of_task WHERE taskName = %s", (taskName))
-            results = cur.fetchall()
-            lst = []
-            for row in results:
-                lst.append({
-                    "metric": row[2],
-                    "datasetName": row[3],
-                    "title": row[0],
-                    "paperLink": row[1]
-                })
-        elif selection == "dataset":
-            cur.execute("SELECT d.datasetName, d.datasetDesc, d.datasetLink FROM v_bench_of_task JOIN dataset d USING(datasetName) WHERE taskName=%s", (taskName))
-            results = cur.fetchall()
-            lst = []
-            for row in results:
-                lst.append({
-                    "dataSetName": row[0],
-                    "datasetDesc": row[1],
-                    "datasetLink": row[2]
-                })
-
+    cur.execute('SELECT * FROM v_bestbench_of_task WHERE taskName = %s', (taskName))
+    results = cur.fetchall()
+    lst = []
+    for row in results:
+        lst.append({
+            "title": row[0],
+            "benchId": row[1],
+            "paperLink": row[2],
+            "metric": row[3],
+            "datasetName": row[4],
+            "datasetId": row[5],
+            "taskName": row[6],
+            "taskDesc": row[7],
+            "codeLink": row[8]
+        })
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
 
