@@ -1,12 +1,15 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Paper from '@/components/Paper';
-import SOTA from '@/components/SOTA';
-import Method from "@/components/Method";
-import Task from "@/components/Task";
-import Dataset from "@/components/Dataset";
+import Vue from 'vue'
+import Router from 'vue-router'
+import Paper from '@/components/Paper'
+import SOTA from '@/components/SOTA'
+import Method from '@/components/Method'
+import Task from '@/components/Task'
+import Datasets from '@/components/Datasets'
+import Author from '@/components/Author'
+import Bench from '@/components/Bench'
+import Dataset from '@/components/Dataset'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   routes: [
@@ -23,18 +26,33 @@ export default new Router({
     {
       path: '/methods',
       name: 'Methods',
-      component: Method
+      component: Method,
     },
     {
       path: '/tasks',
       name: 'Tasks',
-      component: Task
+      component: Task,
     },
     {
       path: '/datasets',
       name: 'Datasets',
-      component: Dataset
+      component: Datasets,
+    },
+    {
+      path: '/author',
+      name: 'Author',
+      component: Author,
+    },
+    {
+      path: '/bench',
+      name: 'Bench',
+      component: Bench,
+    },
+    {
+      path: '/dataset',
+      name: 'Dataset',
+      component: Dataset,
     },
   ],
   mode: 'history',
-});
+})

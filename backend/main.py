@@ -1,8 +1,10 @@
 from flask import Flask, Response, request
 import pymysql as sql
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 app.config.from_json('config.json')
 
 db = sql.connect(host=app.config["DB_HOST"],
@@ -15,7 +17,7 @@ db = sql.connect(host=app.config["DB_HOST"],
 @app.route('/paper', methods=['GET', 'POST'])
 def paper():
     cur = db.cursor()
-    order = "ORDER BY publishDate"
+    order = "ORDER BY publishDate DESC"
     if request.args.get('order') == "star":
         order = "ORDER BY star DESC"
     cur.execute("SELECT * FROM v_paperstar WHERE title LIKE %s {}".format(order),
@@ -24,13 +26,18 @@ def paper():
     results = cur.fetchall()
     lst = []
     for row in results:
-        lst.append({
-            "title": row[0],
-            "paperLink": row[1],
-            "abs": row[2],
-            "publishDate": row[3].strftime('%Y-%m-%d'),
-            "star": int(row[4])
-        })
+        with db.cursor() as cur2:
+            cur2.execute("SELECT authorName FROM v_author_of_paper WHERE paperId=%s AND ORD=1",(row[0]))
+            lst.append({
+                "id": row[0],
+                "title": row[1],
+                "paperLink": row[2],
+                "abs": row[3],
+                "publishDate": row[4].strftime('%Y-%m-%d'),
+                "star": int(row[5]),
+                "author": cur2.fetchone()[0]
+            })
+    cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
 
 
@@ -158,6 +165,24 @@ def bench_board():
             })
     return Response(json.dumps(lst),mimetype = 'application/json')
 
+#评测基准信息，参数id为基准id
+@app.route('/bench',methods = ['GET','POST'])
+def bench():
+    d = None
+    with db.cursor() as cur:
+        cur.execute("""SELECT * FROM v_benchmark_details WHERE benchId=%s""",
+            (request.args.get('id'))
+        )
+        row = cur.fetchone()
+        d = {
+            'taskId': row[1],
+            'datasetId': row[2],
+            'metric': row[3],
+            'taskName': row[4],
+            'datasetName': row[5]
+        }
+    return Response(json.dumps(d),mimetype = 'application/json')
+
 #根据作者id列出其姓名、机构、论文、研究领域，参数id为作者id
 @app.route('/author',methods = ['GET','POST'])
 def author():
@@ -239,13 +264,13 @@ SOTA查询接口
 @app.route('/sota',methods= ['GET', 'POST'])
 def sota():
     cur = db.cursor()
-    cur.execute("SELECT * FROM v_task_papercount ORDER BY paperCnt DESC")
+    cur.execute("SELECT * FROM v_task_of_paper ORDER BY paperCnt DESC")
     results = cur.fetchall()
     lst = []
     for row in results:
         lst.append({
-            "taskName": row[1],
-            "taskDesc": row[2]
+            "taskName": row[0],
+            "taskDesc": row[1]
         })
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
@@ -271,7 +296,7 @@ def method():
             secsql += 'AND title LIKE "%' + title + '%"'
         else:
             secsql = 'WHERE title LIKE "%' + title + '%"'
-    if not secsql.strip():
+    if secsql is None:
         cur.execute("SELECT * FROM v_method_papercount ORDER BY paperCnt DESC")
     else:
         cur.execute("SELECT DISTINCT * FROM v_method_of_paper JOIN paper USING(paperId) {}".format(secsql))
