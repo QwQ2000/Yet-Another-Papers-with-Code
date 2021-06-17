@@ -3,8 +3,8 @@
     <div class="border">
       <br>
       <el-row>
-        <el-col align="left">
-          <div style="font:15px large;height: 20px">
+        <el-col>
+          <div style="font:15px large;height: 30px; text-align: center">
             {{ datasetName }}
           </div>
         </el-col>

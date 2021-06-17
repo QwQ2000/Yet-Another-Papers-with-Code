@@ -57,46 +57,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1{
-  color: white;
-  margin-top: 50px;
-}
-.el-row {
-  margin-bottom: 20px;
-&
-:last-child {
-  margin-bottom: 0;
-}
 
-}
-.el-col {
-  border-radius: 4px;
-  margin-left: 0px;
-}
-
-.bg-purple-dark {
-  background: #ffffff;
-}
-.row-nav {
-  background: linear-gradient(90deg, rgb(59, 191, 180) 0%, rgb(26,87,180) 100%) !important;
-  height: 150px;
-}
-.bg-purple {
-  background: #ffffff;
-}
-
-.bg-purple-light {
-  background: #ffffff;
-}
-
-.grid-content {
-  border-radius: 20px;
-  height: 100%;
-}
-
-.row-bg {
-  padding: 10px 0;
-  height: 170px;
-  background-color: #ffffff;
-}
 </style>

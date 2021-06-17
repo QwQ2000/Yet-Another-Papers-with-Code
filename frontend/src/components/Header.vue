@@ -21,11 +21,15 @@
     </el-col>
 
     <el-col :span="3">
+      <router-link to="/datasets">
       <font color="#000000" size="3">Datasets</font>
+      </router-link>
     </el-col>
 
     <el-col :span="2">
-      <font color="#000000" size="3">Methods</font>
+      <router-link to="/methods">
+        <font color="#000000" size="3">Methods</font>
+      </router-link>
     </el-col>
   </el-row>
 </template>

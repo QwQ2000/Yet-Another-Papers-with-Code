@@ -5,11 +5,10 @@
       <el-row>
         <el-col align="left">
           <div style="font:15px large;height: 40px">
-            {{ taskName }}
+            {{ methodName }}
           </div>
           <br>
           <a style="font:13px Small;color: #969696">
-            <i class="el-icon-data-line"/>&nbsp {{ benchCnt }}&nbsp benchmarks<br>
             <i class="el-icon-reading"/>&nbsp {{ paperCnt }}&nbsp papers with code
           </a>
         </el-col>
@@ -21,21 +20,20 @@
 
 <script>
 export default {
-  name: 'SOTABox',
+  name: 'MethodBox',
   data() {
     return {};
   },
   props: {
-    taskName: 'Attention is All You Need',
-    taskDesc: 'aaaaa.',
+    methodName: 'Attention is All You Need',
+    methodDesc: 'aaaaa.',
     paperCnt: '0',
-    benchCnt: '0'
   },
   methods: {
     search() {
       this.$router.push({
-        path: "/tasks", query: {
-          taskName: this.taskName,
+        path: "/methods", query: {
+          methodName: this.methodName,
         }
       })
     },

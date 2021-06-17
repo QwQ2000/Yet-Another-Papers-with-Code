@@ -279,14 +279,14 @@ def sota():
     return Response(json.dumps(lst), mimetype='application/json')
 
 '''
-method查询接口
+methods查询接口
 根据方法对应的论文数量对方法排序
 筛选某一方法的所有论文。在该筛选结果中按论文名模糊查找
 methodName: 方法名称
 title: 论文名称
 taskName
 '''
-@app.route('/method',methods= ['GET', 'POST'])
+@app.route('/methods',methods= ['GET', 'POST'])
 def method():
     cur = db.cursor()
     methodName = request.args.get('methodName')
@@ -299,7 +299,7 @@ def method():
             secsql += 'AND title LIKE "%' + title + '%"'
         else:
             secsql = 'WHERE title LIKE "%' + title + '%"'
-    if secsql is None:
+    if len(secsql.strip()) == 0 :
         cur.execute("SELECT * FROM v_method_papercount ORDER BY paperCnt DESC")
     else:
         cur.execute("SELECT DISTINCT * FROM v_method_of_paper JOIN paper USING(paperId) {}".format(secsql))
@@ -309,7 +309,8 @@ def method():
         for row in results:
             lst.append({
                 "methodName": row[0],
-                "methodDesc": row[1]
+                "methodDesc": row[1],
+                "paperCnt": row[3]
             })
     else:
         for row in results:
