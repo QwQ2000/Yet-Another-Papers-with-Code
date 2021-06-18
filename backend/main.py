@@ -27,7 +27,7 @@ def paper():
     lst = []
     for row in results:
         with db.cursor() as cur2:
-            cur2.execute("SELECT authorName FROM v_author_of_paper WHERE paperId=%s AND ORD=1",(row[0]))
+            cur2.execute("SELECT authorName FROM v_author_of_paper WHERE paperId=%s AND ORD=1", (row[0]))
             lst.append({
                 "id": row[0],
                 "title": row[1],
@@ -41,111 +41,117 @@ def paper():
     return Response(json.dumps(lst), mimetype='application/json')
 
 
-#数据集信息查询接口，参数id数据集id
-@app.route('/ds_info',methods = ['GET','POST'])
+# 数据集信息查询接口，参数id数据集id
+@app.route('/ds_info', methods=['GET', 'POST'])
 def ds_info():
     d = None
     with db.cursor() as cur:
-        cur.execute("SELECT * FROM dataset WHERE datasetId=%s",(request.args.get('id')))
+        cur.execute("SELECT * FROM dataset WHERE datasetId=%s", (request.args.get('id')))
         row = cur.fetchone()
         d = {
-            'desc':row[1],
-            'link':row[2],
-            'createDate':row[3].strftime('%Y-%m-%d'),
-            'name':row[4]
+            'desc': row[1],
+            'link': row[2],
+            'createDate': row[3].strftime('%Y-%m-%d'),
+            'name': row[4]
         }
-    return Response(json.dumps(d),mimetype = 'application/json')
+    return Response(json.dumps(d), mimetype='application/json')
 
-#根据数据集查找相关任务，参数id数据集id
-@app.route('/ds_task',methods = ['GET','POST'])
+
+# 根据数据集查找相关任务，参数id数据集id
+@app.route('/ds_task', methods=['GET', 'POST'])
 def ds_task():
     lst = []
     with db.cursor() as cur:
-        cur.execute("SELECT taskID,taskName FROM v_benchmark_details WHERE datasetId=%s",(request.args.get('id')))
+        cur.execute("SELECT taskID,taskName FROM v_benchmark_details WHERE datasetId=%s", (request.args.get('id')))
         for row in cur.fetchall():
             lst.append({
-                'taskId':row[0],
-                'taskName':row[1]
+                'taskId': row[0],
+                'taskName': row[1]
             })
-    return Response(json.dumps(lst),mimetype = 'application/json')
+    return Response(json.dumps(lst), mimetype='application/json')
 
-#根据数据集查找相关基准，会列出所有基准的最佳论文，参数id数据集id
-@app.route('/ds_bench',methods = ['GET','POST'])
+
+# 根据数据集查找相关基准，会列出所有基准的最佳论文，参数id数据集id
+@app.route('/ds_bench', methods=['GET', 'POST'])
 def ds_bench():
     lst = []
     with db.cursor() as cur:
         cur.execute("""SELECT b1.taskID,b1.taskName,b1.datasetId,b1.datasetName,b2.modelDesc,b2.paperId,b2.score,b1.benchId 
             FROM v_benchmark_details b1,v_bench_best b2
             WHERE b1.benchId=b2.benchId and b1.datasetId=%s""",
-            (request.args.get('id'))
-        )
+                    (request.args.get('id'))
+                    )
         for row in cur.fetchall():
             lst.append({
-                'taskId':row[0],
-                'taskName':row[1],
-                'datasetId':row[2],
-                'datasetName':row[3],
-                'modelDesc':row[4],
-                'paperId':row[5],
-                'score':float(row[6]),
-                'benchId':row[7]
+                'taskId': row[0],
+                'taskName': row[1],
+                'datasetId': row[2],
+                'datasetName': row[3],
+                'modelDesc': row[4],
+                'paperId': row[5],
+                'score': float(row[6]),
+                'benchId': row[7]
             })
-    return Response(json.dumps(lst),mimetype = 'application/json')
+    return Response(json.dumps(lst), mimetype='application/json')
 
-#根据数据集列出相关论文，需要支持查找功能，参数id数据集id，参数title论文标题
-@app.route('/ds_paper',methods = ['GET','POST'])
+
+# 根据数据集列出相关论文，需要支持查找功能，参数id数据集id，参数title论文标题
+@app.route('/ds_paper', methods=['GET', 'POST'])
 def ds_paper():
     lst = []
     with db.cursor() as cur:
         cur.execute("""SELECT paperId,title,publishDate FROM paper
         WHERE paperId in (SELECT paperId FROM v_bench_of_paper b WHERE b.datasetId=%s) AND title LIKE %s""",
-        (request.args.get('id'),'%' + request.args.get('title') + '%'))
+                    (request.args.get('id'), '%' + request.args.get('title') + '%'))
         for row in cur.fetchall():
             lst.append({
-                'paperId':row[0],
-                'title':row[1],
-                'publishDate':row[2].strftime('%Y-%m-%d'),
+                'paperId': row[0],
+                'title': row[1],
+                'publishDate': row[2].strftime('%Y-%m-%d'),
             })
-    return Response(json.dumps(lst),mimetype = 'application/json')
+    return Response(json.dumps(lst), mimetype='application/json')
 
-#根据任务列出相关数据集，参数id任务id
-@app.route('/task_ds',methods = ['GET','POST'])
+
+# 根据任务列出相关数据集，参数id任务id
+@app.route('/task_ds', methods=['GET', 'POST'])
 def task_ds():
     lst = []
     with db.cursor() as cur:
-        cur.execute("SELECT datasetID,datasetName FROM v_benchmark_details WHERE taskId=%s",(request.args.get('id')))
+        cur.execute("SELECT datasetID,datasetName FROM v_benchmark_details WHERE taskId=%s", (request.args.get('id')))
         for row in cur.fetchall():
             lst.append({
-                'datasetId':row[0],
-                'dadasetName':row[1]
+                'datasetId': row[0],
+                'dadasetName': row[1]
             })
-    return Response(json.dumps(lst),mimetype = 'application/json')
+    return Response(json.dumps(lst), mimetype='application/json')
 
-#根据任务集查找相关基准，会列出所有基准的最佳论文，参数id数据集id
-@app.route('/task_bench',methods = ['GET','POST'])
+
+# 根据任务集查找相关基准，会列出所有基准的最佳论文，参数id数据集id
+@app.route('/task_bench', methods=['GET', 'POST'])
 def task_bench():
     lst = []
     with db.cursor() as cur:
         cur.execute("""SELECT b1.taskID,b1.taskName,b1.datasetId,b1.datasetName,b2.modelDesc,b2.paperId,b2.score,b1.benchId 
             FROM v_benchmark_details b1,v_bench_best b2
             WHERE b1.benchId=b2.benchId and b1.taskId=%s""",
-            (request.args.get('id'))
-        )
+                    (request.args.get('id'))
+                    )
         for row in cur.fetchall():
             lst.append({
-                'taskId':row[0],
-                'taskName':row[1],
-                'datasetId':row[2],
-                'datasetName':row[3],
-                'modelDesc':row[4],
-                'paperId':row[5],
-                'score':float(row[6]),
-                'benchId':row[7]
+                'taskId': row[0],
+                'taskName': row[1],
+                'datasetId': row[2],
+                'datasetName': row[3],
+                'modelDesc': row[4],
+                'paperId': row[5],
+                'score': float(row[6]),
+                'benchId': row[7]
             })
-    return Response(json.dumps(lst),mimetype = 'application/json')
+    return Response(json.dumps(lst), mimetype='application/json')
 
-#根据评测基准列出论文排行榜单，根据分数从高到低排好序，参数id为基准id
-@app.route('/bench_board',methods = ['GET','POST'])
+
+# 根据评测基准列出论文排行榜单，根据分数从高到低排好序，参数id为基准id
+@app.route('/bench_board', methods=['GET', 'POST'])
 def bench_board():
     lst = []
     with db.cursor() as cur:
@@ -153,26 +159,27 @@ def bench_board():
             FROM paperbench b INNER JOIN paper p ON p.paperId=b.paperId
             WHERE b.benchId=%s
             ORDER BY b.score DESC""",
-            (request.args.get('id'))
-        )
+                    (request.args.get('id'))
+                    )
         for row in cur.fetchall():
             lst.append({
-                'modelDesc':row[0],
-                'score':float(row[1]),
-                'paperId':row[2],
-                'title':row[3],
-                'publishDate':row[4].strftime('%Y-%m-%d'),
+                'modelDesc': row[0],
+                'score': float(row[1]),
+                'paperId': row[2],
+                'title': row[3],
+                'publishDate': row[4].strftime('%Y-%m-%d'),
             })
-    return Response(json.dumps(lst),mimetype = 'application/json')
+    return Response(json.dumps(lst), mimetype='application/json')
 
-#评测基准信息，参数id为基准id
-@app.route('/bench',methods = ['GET','POST'])
+
+# 评测基准信息，参数id为基准id
+@app.route('/bench', methods=['GET', 'POST'])
 def bench():
     d = None
     with db.cursor() as cur:
         cur.execute("""SELECT * FROM v_benchmark_details WHERE benchId=%s""",
-            (request.args.get('id'))
-        )
+                    (request.args.get('id'))
+                    )
         row = cur.fetchone()
         d = {
             'taskId': row[1],
@@ -181,19 +188,20 @@ def bench():
             'taskName': row[4],
             'datasetName': row[5]
         }
-    return Response(json.dumps(d),mimetype = 'application/json')
+    return Response(json.dumps(d), mimetype='application/json')
 
-#根据作者id列出其姓名、机构、论文、研究领域，参数id为作者id
-@app.route('/author',methods = ['GET','POST'])
+
+# 根据作者id列出其姓名、机构、论文、研究领域，参数id为作者id
+@app.route('/author', methods=['GET', 'POST'])
 def author():
     d = {
-        'name':'',
-        'inst':'',
-        'paperList':[],
-        'taskList':[]
+        'name': '',
+        'inst': '',
+        'paperList': [],
+        'taskList': []
     }
     with db.cursor() as cur:
-        cur.execute("SELECT * FROM author WHERE authorId=%s",(request.args.get('id')))
+        cur.execute("SELECT * FROM author WHERE authorId=%s", (request.args.get('id')))
         row = cur.fetchone()
         d['name'] = row[1]
         d['inst'] = row[2]
@@ -202,26 +210,27 @@ def author():
             FROM v_author_of_paper a INNER JOIN paper p ON a.paperId=p.paperId
             WHERE a.authorId=%s
             ORDER BY p.publishDate DESC"""
-            ,(request.args.get('id')))
+                    , (request.args.get('id')))
         for row in cur.fetchall():
             d['paperList'].append({
-                'paperId':row[0],
-                'title':row[1],
-                'publishDate':row[2].strftime('%Y-%m-%d'),
-                'ord':row[3],
+                'paperId': row[0],
+                'title': row[1],
+                'publishDate': row[2].strftime('%Y-%m-%d'),
+                'ord': row[3],
             })
-        
+
         cur.execute("""SELECT b.taskId,b.taskName
             FROM v_author_of_paper a INNER JOIN v_bench_of_paper b ON a.paperId=b.paperId
             WHERE a.authorId=%s"""
-            ,(request.args.get('id')))
+                    , (request.args.get('id')))
         for row in cur.fetchall():
             d['taskList'].append({
-                'taskId':row[0],
-                'taskName':row[1],
+                'taskId': row[0],
+                'taskName': row[1],
             })
-    return Response(json.dumps(d),mimetype = 'application/json')
-	
+    return Response(json.dumps(d), mimetype='application/json')
+
+
 '''
 dataset查询接口
 根据名称模糊查找数据集
@@ -231,7 +240,9 @@ dataName: 数据集标题
 taskName: 任务标题
 order: 排序方式
 '''
-@app.route('/dataset',methods= ['GET', 'POST'])
+
+
+@app.route('/dataset', methods=['GET', 'POST'])
 def dataset():
     with db.cursor() as cur:
         order = "ORDER BY createDate"
@@ -244,7 +255,7 @@ def dataset():
         if request.args.get('taskName') is not None:
             taskName = 'WHERE taskName LIKE "%' + request.args.get('taskName') + '%"'
         cur.execute("SELECT * FROM v_dataset_papercount {} {} {}".format(dataName, taskName, order)
-        )
+                    )
         results = cur.fetchall()
         lst = []
         for row in results:
@@ -257,11 +268,14 @@ def dataset():
             })
     return Response(json.dumps(lst), mimetype='application/json')
 
+
 '''
 SOTA查询接口
 根据任务对应的论文数量对任务排序
 '''
-@app.route('/sota',methods= ['GET', 'POST'])
+
+
+@app.route('/sota', methods=['GET', 'POST'])
 def sota():
     cur = db.cursor()
     cur.execute("SELECT * FROM v_task_papercount JOIN v_task_benchcount USING(taskId) ORDER BY paperCnt DESC;")
@@ -278,6 +292,7 @@ def sota():
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
 
+
 '''
 methods查询接口
 根据方法对应的论文数量对方法排序
@@ -286,23 +301,27 @@ methodName: 方法名称
 title: 论文名称
 taskName
 '''
-@app.route('/methods',methods= ['GET', 'POST'])
+
+
+@app.route('/methods', methods=['GET', 'POST'])
 def method():
     cur = db.cursor()
     methodName = request.args.get('methodName')
     title = request.args.get('title')
     secsql = ''
     if methodName is not None:
-        secsql = 'WHERE methodName LIKE "%' + methodName + '%"'
-    if title is not None:
+        secsql = 'WHERE methodName = "' + methodName + '"'
+    if title is not None and len(title.strip()) > 0:
         if methodName is not None:
             secsql += 'AND title LIKE "%' + title + '%"'
         else:
             secsql = 'WHERE title LIKE "%' + title + '%"'
-    if len(secsql.strip()) == 0 :
+    if len(secsql.strip()) == 0:
         cur.execute("SELECT * FROM v_method_papercount ORDER BY paperCnt DESC")
     else:
-        cur.execute("SELECT DISTINCT * FROM v_method_of_paper JOIN paper USING(paperId) {}".format(secsql))
+        cur.execute("""SELECT DISTINCT * 
+        FROM v_method_of_paper JOIN paper USING(paperId) JOIN method m USING(methodId, methodName) JOIN v_fircode_paper USING(paperId) 
+        {}""".format(secsql))
     results = cur.fetchall()
     lst = []
     if methodName is None and title is None:
@@ -315,14 +334,16 @@ def method():
     else:
         for row in results:
             lst.append({
-                "methodName": row[2],
+                "methodName": row[1],
+                "methodDesc": row[7],
                 "title": row[3],
                 "paperLink": row[4],
-                "abs": row[5],
-                "publishDate": row[6].strftime('%Y-%m-%d')
+                "publishDate": row[6].strftime('%Y-%m-%d'),
+                "codeLink": row[8]
             })
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')
+
 
 '''
 task查询接口
@@ -330,7 +351,9 @@ task查询接口
 根据任务查询所有相关的数据集
 taskName: 任务名称
 '''
-@app.route('/task',methods= ['GET', 'POST'])
+
+
+@app.route('/task', methods=['GET', 'POST'])
 def task():
     cur = db.cursor()
     taskName = request.args.get('taskName')
@@ -366,6 +389,8 @@ data of author = {authorId, authorName, ord}
 data of method = {methodId, methodName}
 data of benchmark = {benchId, taskId, datasetId, metric, taskName, datasetName}
 """
+
+
 @app.route('/paperDetails', methods=['GET', 'POST'])
 def paperDetails():
     rst = {}

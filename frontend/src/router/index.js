@@ -8,6 +8,7 @@ import Datasets from '@/components/Datasets'
 import Author from '@/components/Author'
 import Bench from '@/components/Bench'
 import Dataset from '@/components/Dataset'
+import Methods from "@/components/Methods";
 
 Vue.use(Router)
 
@@ -26,6 +27,11 @@ export default new Router({
     {
       path: '/methods',
       name: 'Methods',
+      component: Methods,
+    },
+    {
+      path: '/method',
+      name: 'Method',
       component: Method,
     },
     {

@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: 'MethodBox',
+  name: 'MethodsBox',
   data() {
     return {};
   },
@@ -32,7 +32,7 @@ export default {
   methods: {
     search() {
       this.$router.push({
-        path: "/methods", query: {
+        path: "/method", query: {
           methodName: this.methodName,
         }
       })
