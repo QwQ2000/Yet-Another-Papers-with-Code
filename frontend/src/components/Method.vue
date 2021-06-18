@@ -60,6 +60,7 @@ h1 {
   font-size: 50px;
   color: white;
   margin-top: 50px;
+  font-weight: 10;
 }
 
 .el-row {

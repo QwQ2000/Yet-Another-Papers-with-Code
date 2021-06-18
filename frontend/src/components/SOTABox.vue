@@ -45,17 +45,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-a {
-  color: #000;
-  cursor: pointer;
-}
 
-.border {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 14px;
-}
-
-.el-row {
-  margin-left: 20px;
-}
 </style>
