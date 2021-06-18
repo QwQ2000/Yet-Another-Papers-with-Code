@@ -245,26 +245,30 @@ order: 排序方式
 @app.route('/dataset', methods=['GET', 'POST'])
 def dataset():
     with db.cursor() as cur:
-        order = "ORDER BY createDate"
+        order = "ORDER BY createDate DESC"
         if request.args.get('order') == "paperCnt":
             order = "ORDER BY paperCnt DESC"
-        dataName = ''
-        taskName = ''
-        if request.args.get('dataName') is not None:
-            dataName = 'WHERE datasetName LIKE "%' + request.args.get('dataName') + '%"'
-        if request.args.get('taskName') is not None:
-            taskName = 'WHERE taskName LIKE "%' + request.args.get('taskName') + '%"'
-        cur.execute("SELECT * FROM v_dataset_papercount {} {} {}".format(dataName, taskName, order)
+        whesql = ''
+        if request.args.get('dataName') is not None and len(request.args.get('dataName')) > 0:
+            whesql = 'WHERE datasetName LIKE "%' + request.args.get('dataName') + '%"'
+        if request.args.get('taskName') is not None and len(request.args.get('taskName')) > 0:
+            if whesql == '':
+                whesql = 'WHERE taskName LIKE "%' + request.args.get('taskName') + '%"'
+            else:
+                whesql += 'AND taskName LIKE "%' + request.args.get('taskName') + '%"'
+        cur.execute("SELECT * FROM v_dataset_papercount {} {}".format(whesql, order)
                     )
         results = cur.fetchall()
         lst = []
         for row in results:
             lst.append({
+                "datasetId": row[6],
                 "datasetName": row[3],
                 "datasetLink": row[1],
                 "datasetDesc": row[0],
                 "createDate": row[2].strftime('%Y-%m-%d'),
-                "taskName": row[4]
+                "taskName": row[4],
+                "paperCnt": row[5]
             })
     return Response(json.dumps(lst), mimetype='application/json')
 
