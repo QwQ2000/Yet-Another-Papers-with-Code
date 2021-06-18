@@ -24,13 +24,14 @@
                                 PDF 
                             </el-button>
                     </a>
-                    <br><br>
                     <el-row type="flex" align="left">
-                        <span v-for="(it,index) in methods" :key="index">
-                            <router-link :to="{name:'Method',query:{methodName:it.methodName}}">
-                            <el-tag type="warning">{{it.methodName}}</el-tag>
-                            </router-link>&nbsp &nbsp
-                        </span>
+                        <p style="line-height:40px;"> 
+                            <span v-for="(it,index) in methods" :key="index">
+                                <router-link :to="{name:'Method',query:{methodName:it.methodName}}">
+                                <el-tag type="warning">{{it.methodName}}</el-tag>
+                                </router-link>&nbsp &nbsp
+                            </span>
+                        </p>
                     </el-row>
                     <br><br>
                     </el-row>

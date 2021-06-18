@@ -28,7 +28,7 @@
       style="width: 100%">
       <el-table-column
         prop="PaperTitle"
-        label="Paper"
+        label="Title"
         width="650">
       </el-table-column>
       <el-table-column
@@ -42,13 +42,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="paperLink"
-        label="Results"
+        prop="paperId"
+        label="Paper"
         width="130">
         <template slot-scope="scope">
-          <a :href="scope.row.paperLink">
+          <router-link :to="{name:'PaperInfo',query:{id:scope.row.paperId}}">
             <i class="fa fa-file" aria-hidden="true"></i>
-          </a>
+          </router-link>
         </template>
       </el-table-column>
       <el-table-column
@@ -84,6 +84,7 @@ export default {
           this.tableData.push({
             PaperTitle: e["title"],
             paperLink: e["paperLink"],
+            paperId: e["paperId"],
             codeLink: e["codeLink"],
             publishDate: e["publishDate"]
           })

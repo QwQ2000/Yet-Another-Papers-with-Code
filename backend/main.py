@@ -342,6 +342,7 @@ def method():
                 "methodDesc": row[7],
                 "title": row[3],
                 "paperLink": row[4],
+                "paperId": row[0],
                 "publishDate": row[6].strftime('%Y-%m-%d'),
                 "codeLink": row[8]
             })
