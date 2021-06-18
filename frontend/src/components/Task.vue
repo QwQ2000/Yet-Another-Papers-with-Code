@@ -33,8 +33,8 @@
           label="Paper"
           width="180">
           <template slot-scope="scope">
-            <a :href="scope.row.paperLink">
-              <i class="fa fa-file" aria-hidden="true"></i>
+            <a :href="scope.row.paperLink" @click.stop="deleteVisible = true">
+              <i class="fa fa-file" aria-hidden="true" ></i>
             </a>
           </template>
         </el-table-column>
@@ -43,8 +43,8 @@
           label="Code"
           width="180">
           <template slot-scope="scope">
-            <a :href="scope.row.codeLink">
-              <i class="fa fa-github" aria-hidden="true"></i>
+            <a :href="scope.row.codeLink" @click.stop="deleteVisible = true">
+              <i class="fa fa-github" aria-hidden="true" style="font-size: 18px"></i>
             </a>
           </template>
         </el-table-column>

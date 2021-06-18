@@ -37,7 +37,7 @@
         width="100">
         <template slot-scope="scope">
           <a :href="scope.row.codeLink">
-            <i class="fa fa-github" aria-hidden="true"></i>
+            <i class="fa fa-github" aria-hidden="true" style="font-size: 18px"></i>
           </a>
         </template>
       </el-table-column>
