@@ -9,6 +9,7 @@ import Author from '@/components/Author'
 import Bench from '@/components/Bench'
 import Dataset from '@/components/Dataset'
 import Methods from "@/components/Methods";
+import PaperInfo from "@/components/PaperInfo";
 
 Vue.use(Router)
 
@@ -58,6 +59,11 @@ export default new Router({
       path: '/dataset',
       name: 'Dataset',
       component: Dataset,
+    },
+    {
+      path: '/paper_info',
+      name: 'PaperInfo',
+      component: PaperInfo,
     },
   ],
   mode: 'history',

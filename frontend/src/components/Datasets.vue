@@ -1,5 +1,6 @@
 <template>
   <div id="Datasets">
+    <br>
     <el-row class="row-nav">
       <h1>Datasets</h1>
     </el-row>
@@ -70,7 +71,7 @@ export default {
   },
   methods: {
     getMessage() {
-      var path = '/api/dataset?order=' + this.$route.query.order
+      var path = 'http://127.0.0.1:5000/dataset?order=' + this.$route.query.order
       if (this.$route.query.seaDataName)
         path += '&dataName=' + this.$route.query.seaDataName
       if (this.$route.query.seaTaskName)

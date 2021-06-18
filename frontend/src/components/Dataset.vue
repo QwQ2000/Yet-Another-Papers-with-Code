@@ -8,7 +8,9 @@
                 <br>
                 <el-row type="flex" align="left">
                     <span v-for="(it,index) in taskList" :key="index">
-                        <el-tag type="warning">{{it.taskName}}</el-tag> &nbsp
+                        <router-link :to="{name:'Tasks',query:{taskName:it.taskName}}">
+                        <el-tag type="warning">{{it.taskName}}</el-tag>
+                        </router-link>&nbsp &nbsp
                     </span>
                 </el-row>
                 <h1>{{d.name}}</h1>
@@ -108,6 +110,9 @@ export default {
     });
   },
   methods: {
+      handleClick(row) {
+          this.$router.push({name:'PaperInfo',query:{id:row.paperId}})
+      }
   },
 };
 </script>

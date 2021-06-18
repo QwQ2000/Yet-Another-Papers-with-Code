@@ -21,7 +21,7 @@
                 </el-row>
                 <br>
                 <el-row>
-                    <el-button type="primary" plain icon="el-icon-document">Info</el-button>
+                    <el-button type="primary" plain icon="el-icon-document" @click="onClick">Info</el-button>
                 </el-row>
                 <br>
                 <el-row>
@@ -54,6 +54,9 @@ export default {
     star:233
   },
   methods: {
+      onClick() {
+          this.$router.push({name:'PaperInfo',query:{id:this.link}})
+      }
   },
 };
 </script>

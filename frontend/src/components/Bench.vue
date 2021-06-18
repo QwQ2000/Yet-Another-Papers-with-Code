@@ -68,6 +68,9 @@ export default {
     });
   },
   methods: {
+      handleClick(row) {
+          this.$router.push({name:'PaperInfo',query:{id:row.paperId}})
+      }
   },
 };
 </script>

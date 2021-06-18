@@ -17,7 +17,9 @@
                 <br><br>
                 <el-row>
                     <span v-for="(it,index) in taskList" :key="index">
-                        <el-tag>{{it.taskName}}</el-tag> &nbsp
+                        <router-link :to="{name:'Tasks',query:{taskName:it.taskName}}">
+                        <el-tag>{{it.taskName}}</el-tag>
+                        </router-link>&nbsp &nbsp
                     </span>
                 </el-row>
                 <br><br>
@@ -43,7 +45,7 @@
                 </el-table-column>
                 <el-table-column
                 label=""
-                width="100">
+                width="130">
                 <template slot-scope="scope">
                     <el-button @click="handleClick(scope.row)" type="primary" plain icon="el-icon-document">View</el-button>
                 </template>
@@ -98,6 +100,9 @@ export default {
     });
   },
   methods: {
+      handleClick(row) {
+          this.$router.push({name:'PaperInfo',query:{id:row.paperId}})
+      }
   },
 };
 </script>
