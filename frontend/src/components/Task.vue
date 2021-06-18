@@ -17,7 +17,7 @@
       <br><br>
       <el-table
         :data="tableData"
-        style="width: 100%">
+        style="width: 100% " :row-class-name="tableRowClassName" @row-click="onRowClick">
         <el-table-column
           prop="Dataset"
           label="Dataset"
@@ -105,6 +105,20 @@ export default {
         }
       })
     },
+    tableRowClassName({row, rowIndex}) {
+      //把每一行的索引放进row
+      row.index = rowIndex;
+    },
+    onRowClick(row, event, column) {
+      //点击获取索引
+      const id = row.index;
+      console.log()
+      this.$router.push({
+        path: "/bench", query: {
+          id: this.benchmarks[id]["benchId"]
+        }
+      })
+    },
   },
   created() {
     this.search();
@@ -114,4 +128,7 @@ export default {
 
 <style scoped>
 
+.el-table >>> .el-table__body tr:hover>td {
+  cursor: pointer;
+}
 </style>
