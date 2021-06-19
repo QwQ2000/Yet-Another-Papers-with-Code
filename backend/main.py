@@ -369,13 +369,14 @@ def task():
         lst.append({
             "title": row[0],
             "benchId": row[1],
-            "paperLink": row[2],
+            "paperId": row[2],
             "metric": row[3],
             "datasetName": row[4],
             "datasetId": row[5],
             "taskName": row[6],
             "taskDesc": row[7],
-            "codeLink": row[8]
+            "codeLink": row[8],
+            "modelDesc": row[9]
         })
     cur.close()
     return Response(json.dumps(lst), mimetype='application/json')

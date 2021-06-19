@@ -21,21 +21,31 @@
         <el-table-column
           prop="Dataset"
           label="Dataset"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="Metric"
+          label="Metric"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="BestModel"
+          label="BestModel"
           width="200">
         </el-table-column>
         <el-table-column
           prop="PaperTitle"
           label="Paper Title"
-          width="600">
+          width="500">
         </el-table-column>
         <el-table-column
-          prop="paperLink"
+          prop="paperId"
           label="Paper"
-          width="180">
+          width="80">
           <template slot-scope="scope">
-            <a :href="scope.row.paperLink" @click.stop="deleteVisible = true">
-              <i class="fa fa-file" aria-hidden="true" ></i>
-            </a>
+            <router-link :to="{name:'PaperInfo',query:{id:scope.row.paperId}}" @click.stop="deleteVisible = true">
+              <i class="fa fa-file" aria-hidden="true"></i>
+            </router-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -94,8 +104,10 @@ export default {
           var e = this.benchmarks[j]
           this.tableData.push({
             Dataset: e["datasetName"],
+            Metric: e["metric"],
+            BestModel: "🏆" + e["modelDesc"],
             PaperTitle: e["title"],
-            paperLink: e["paperLink"],
+            paperId: e["paperId"],
             codeLink: e["codeLink"]
           })
           this.datasets.push({
@@ -128,7 +140,7 @@ export default {
 
 <style scoped>
 
-.el-table >>> .el-table__body tr:hover>td {
+.el-table >>> .el-table__body tr:hover > td {
   cursor: pointer;
 }
 </style>
