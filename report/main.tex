@@ -1,0 +1,64 @@
+%!TEX encoding = UTF-8 Unicode
+%!TEX program = xelatex
+
+\documentclass[bachelor]{ustcthesis}
+% bachelor|master|doctor
+\usepackage{ustcextra}
+\usepackage{minted}
+\graphicspath{{figures/}}
+\bibliographystyle{ustcauthoryear}
+% \bibliographystyle{ustcnumerical}
+
+
+\newcommand{\docname}{数据库系统实践作业报告}
+\renewpagestyle{front}[\zihao{-5}]{
+    \sethead{}{\docname}{}
+    \setfoot{}{\thepage}{}
+    \headrule
+}
+\renewpagestyle{main}[\zihao{-5}]{
+    \sethead{}{}{\docname}
+    \setfoot{华东师范大学计算机科学与技术学院}{\thepage}{}
+    \headrule
+    \footrule
+}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  
+\newcommand{\checkbox}{$\text{\rlap{$\checkmark$}}\square$}
+\newcommand{\emptybox}{$\Box$}
+
+\begin{document}
+
+
+    \begin{titlepage}
+    \begin{center}
+        ~\\[2cm]
+        ~\\[0.4cm]
+        {\Huge \bfseries \docname\\Yet Another Papers with Code}\\[0.4cm]
+        ~\\[1.5cm]
+        \begin{tabular}{cc}
+            张嘉氵昊 & 10185102243\\
+            汪杰 & 10185102223\\
+            朱张弛 & 10185102126\\
+        \end{tabular} \\[5cm]
+        {\large \bfseries 华东师范大学计算机科学与技术学院}
+        
+        {\large \bfseries \number\year 年 \number\month 月 }
+    \end{center}
+    \end{titlepage}
+    
+    \frontmatter
+    \tableofcontents
+    \mainmatter
+    \input{chapters/intro}
+    
+    \input{chapters/concept_design}
+    
+    \input{chapters/logic_design}
+    
+    \input{chapters/implementation}
+    
+    \input{chapters/web_design}
+    
+    \input{chapters/bullshits}
+
+\end{document}

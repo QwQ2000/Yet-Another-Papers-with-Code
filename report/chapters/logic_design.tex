@@ -1,0 +1,160 @@
+\chapter{数据库逻辑结构设计}
+
+\section{关系模式设计}
+
+根据概念结构设计得到的E-R图和转换规则，得到如下关系模式：
+\begin{enumerate}
+    \item 论文（论文编号，论文标题，论文链接，摘要，发表日期）
+    \item 作者（作者编号，姓名，机构）
+    \item 代码（代码编号，论文编号，代码链接，收藏数，框架）。外键：论文编号
+    \item 方法（方法编号，方法名，方法描述）
+    \item 评价指标（指标编号，得分计算方式，数据集编号，任务编号）。外键：数据集编号，任务编号
+    \item 任务（任务编号，任务名称，任务描述）
+    \item 数据集（数据集编号，数据集名称，数据集描述，数据集链接，创建日期）
+    \item 论文作者（论文编号，作者编号，作者顺序，是否通讯作者）。外键：论文编号，作者编号
+    \item 论文方法（论文编号，方法编号）。外键：论文编号，方法编号
+    \item  论文评价（论文编号，指标编号，得分，模型实现细节）。外键：论文编号，指标编号
+\end{enumerate}
+
+\section{基本表设计}
+
+基本表设计如表\ref{tab:paper} $\sim$ \ref{tab:paper-benchmark} 所示。
+
+\begin{table}[htbp!]
+    \centering
+    \caption{paper表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        paperId & int & 否 & 主键 & 论文编号 \\ \hline
+        title & varchar(255) & 否 &  & 论文标题 \\ \hline
+        paperLink & varchar(255) & 否 &  & 论文链接 \\ \hline
+        abs & varchar(255) & 否 &  & 简短摘要 \\ \hline
+        publishDate & date & 否 &  & 发表日期 \\ \hline
+    \end{tabular}
+    \label{tab:paper}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{author表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        authorId & int & 否 & 主键 & 作者编号 \\ \hline
+        authorName & varchar(255) & 否 &  & 姓名 \\ \hline
+        inst & varchar(255) & 是 &  & 机构 \\ \hline
+    \end{tabular}
+    \label{tab:author}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{code表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        codeId & int & 否 & 主键 & 代码编号 \\ \hline
+        paperId & int & 否 & 外键 & 论文编号 \\ \hline
+        codeLink & varchar(255) & 否 &  & 代码链接 \\ \hline
+        stars & int & 否 &  & 收藏数 \\ \hline
+        framework & varchar(255) & 否 &  & 框架 \\ \hline
+    \end{tabular}
+    \label{tab:code}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{method表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        methodId & int & 否 & 主键 & 方法编号 \\ \hline
+        methodName & varchar(255) & 否 &  & 方法名 \\ \hline
+        methodDesc & varchar(255) & 是 &  & 方法描述 \\ \hline
+    \end{tabular}
+    \label{tab:method}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{benchmark表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        benchId & int & 否 & 主键 & 指标编号 \\ \hline
+        metric & varchar(255) & 否 &  & 得分计算方式 \\ \hline
+        datasetId & int & 否 & 外键 & 数据集编号 \\ \hline
+        taskId & int & 否 & 外键 & 任务编号 \\ \hline
+    \end{tabular}
+    \label{tab:benchmark}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{task表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        taskId & int & 否 & 主键 & 任务编号 \\ \hline
+        taskName & varchar(255) & 否 &  & 任务名称 \\ \hline
+        taskDesc & varchar(255) & 是 &  & 任务描述 \\ \hline
+    \end{tabular}
+    \label{tab:task}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{dataset表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        datasetId & int & 否 & 主键 & 数据集编号 \\ \hline
+        datasetName & varchar(255) & 否 &  & 数据集名称 \\ \hline
+        datasetDesc & varchar(255) & 是 &  & 数据集描述 \\ \hline
+        datasetLink & varchar(255) & 否 &  & 数据集链接 \\ \hline
+        createDate & date & 否 &  & 创建日期 \\ \hline
+    \end{tabular}
+    \label{tab:dataset}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{paper-author表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        paperId & int & 否 & 主键，外键 & 论文编号 \\ \hline
+        authorId & int & 否 & 主键，外键 & 作者编号 \\ \hline
+        ord & int & 否 &  & 作者顺序 \\ \hline
+        iscorr & int & 否 &  & 是否通讯作者 \\ \hline
+    \end{tabular}
+    \label{tab:paper-author}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{paper-method表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        paperId & int & 否 & 主键，外键 & 论文编号 \\ \hline
+        methodId & int & 否 & 主键，外键 & 方法编号 \\ \hline
+    \end{tabular}
+    \label{tab:paper-method}
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{paper-benchmark表}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        属性名 & 数据类型 & 是否可空 & 键 & 解释 \\ \hline
+        paperId & int & 否 & 主键，外键 & 论文编号 \\ \hline
+        benchId & int & 否 & 主键，外键 & 指标编号 \\ \hline
+        score & decimal(3,3) & 否 &  & 得分 \\ \hline
+        modelDesc & varchar(255) & 是 &  & 模型实现细节 \\ \hline
+    \end{tabular}
+    \label{tab:paper-benchmark}
+\end{table}
+
